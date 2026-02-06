@@ -1,0 +1,12 @@
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,jsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [
+    require("tailwindcss-animate"), // Make sure this matches the package you installed
+  ],
+}
