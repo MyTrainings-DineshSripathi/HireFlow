@@ -2,17 +2,22 @@ import React from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { jobs } from '@/DummyData/Dummy'
 import { Building } from 'lucide-react'
+import JobCard from '../JobCard/JobCard'
+import JobDetails from './JobDetails'
 
 function JobDetailedView() {
     const {jobId} = useParams()
 
     const job = jobs.find((job) => job.id == jobId)
 
-    const similarJobs = jobs.filter((jobData) => (jobData.title == job.title && jobData.id != job.id))
+    const similarJobs = jobs.filter((jobData) => ((jobData.title == job.title && jobData.id != job.id) || jobData.skills.some(skill => {
+        console.log(job.skills.includes(skill))
+        return  job.skills.includes(skill)
+    })))
 
     console.log(similarJobs)
 
-    console.log(job)
+    console.log(job.skills.includes("Java", "Spring Boot", "Microservices"))
 
     console.log(jobId)
     return (
@@ -128,7 +133,13 @@ function JobDetailedView() {
         </div>
         <div>
             <h1>Similar jobs</h1>
+            <div className='flex gap-5'>
+                {similarJobs.map((job) => <JobCard key={job.id} job={job} />)}
+            </div>
         </div>
+        <section>
+            <JobDetails></JobDetails>
+        </section>
     </div>
     )
 }
