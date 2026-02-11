@@ -3,8 +3,16 @@ import { NavLink } from 'react-router-dom'
 import logo from '../../assets/logo-1.png'
 import { LayoutDashboard, LogIn, Menu, Search, Briefcase } from 'lucide-react'
 import { Button } from "@/components/ui/button"
+import { jobs } from '@/DummyData/Dummy'
+import { useState } from 'react'
 
 function Header() {
+
+const [search, setSearch] = useState('')
+const searchField = (job) => {
+  jobs.filter(job => job.title.toLowerCase().includes(search.toLowerCase()) || jobs.filter(job => job.skills.toLowerCase().includes(search.toLowerCase())))
+}
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -55,14 +63,25 @@ function Header() {
 
         {/* Right Section: Global Search & Auth */}
         <div className="flex items-center gap-4">
+          <div>
+            <h5>Total jobs:{jobs.length}</h5>
+          </div>
           {/* Search Bar with Muted Palette */}
           <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input 
               type="search" 
               placeholder="Search jobs, companies..." 
+              value={search}
               className="h-10 w-72 rounded-full border border-input bg-muted/30 pl-10 pr-4 text-sm transition-all focus:bg-background focus:ring-2 focus:ring-primary/20 focus:outline-none"
+              onChange={(e) => setSearch(e.target.value)}
             />
+            {searchField().map((job) => (
+              <div key={job.id}>
+                {job.title}
+                {job.skills?.join(',')}
+              </div>
+            ))}
           </div>
 
           <div className="flex items-center gap-2 border-l border-border pl-4">
