@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-    selectedJob : {}
+    selectedJob : {},
+    search : ""
 }
 
 const JobSlice = createSlice({
@@ -10,9 +11,12 @@ const JobSlice = createSlice({
     reducers : {
         setSelectedJob : (state, action) => {
             state.selectedJob = action.payload
+        },
+        setSearch : (state, action) => {
+            state.search = action.payload
         }
     }
 })
 
-export const { setSelectedJob } = JobSlice.actions
+export const { setSelectedJob, setSearch } = JobSlice.actions
 export default JobSlice.reducer
