@@ -6,6 +6,7 @@ export const jobs = [
     location: "Bangalore, India",
     experience: "0-2 Years",
     type: "Full Time",
+    salary: "INR 6,00,000 - 12,00,000 / year",
     skills: ["HTML", "CSS", "JavaScript", "React"],
     postedAt: "2026-02-01T09:00:00Z",
     jobDescription: [
@@ -31,6 +32,7 @@ export const jobs = [
     location: "Hyderabad, India",
     experience: "1-3 Years",
     type: "Full Time",
+    salary: "INR 6,00,000 - 12,00,000 / year",
     skills: ["Java", "Spring Boot", "MySQL"],
     postedAt: "2026-02-02T10:00:00Z",
     jobDescription: [
@@ -56,6 +58,7 @@ export const jobs = [
     location: "Remote",
     experience: "2-4 Years",
     type: "Remote",
+    salary: "INR 8,00,000 - 15,00,000 / year",
     skills: ["React", "Node.js", "MongoDB"],
     postedAt: "2026-02-03T08:30:00Z",
     jobDescription: [
@@ -81,6 +84,7 @@ export const jobs = [
     location: "Chennai, India",
     experience: "1-3 Years",
     type: "Full Time",
+    salary: "INR 6,00,000 - 12,00,000 / year",
     skills: ["Java", "Spring", "Hibernate"],
     postedAt: "2026-02-04T11:00:00Z",
     jobDescription: [
@@ -106,6 +110,7 @@ export const jobs = [
     location: "Pune, India",
     experience: "0-2 Years",
     type: "Contract",
+    salary: "INR 5,00,000 - 9,00,000 / year",
     skills: ["React", "Redux", "Tailwind"],
     postedAt: "2026-02-05T07:20:00Z",
     jobDescription: [
@@ -129,6 +134,7 @@ export const jobs = [
     location: "Mumbai, India",
     experience: "2-5 Years",
     type: "Full Time",
+    salary: "INR 6,00,000 - 12,00,000 / year",
     skills: ["Java", "DSA", "System Design"],
     postedAt: "2026-02-06T09:10:00Z",
     jobDescription: [
@@ -153,6 +159,7 @@ export const jobs = [
     location: "Delhi, India",
     experience: "0-2 Years",
     type: "Full Time",
+    salary: "INR 6,00,000 - 12,00,000 / year",
     skills: ["SQL", "Excel", "Power BI"],
     postedAt: "2026-02-07T07:30:00Z",
     jobDescription: [
@@ -176,6 +183,7 @@ export const jobs = [
     location: "Bangalore, India",
     experience: "3-5 Years",
     type: "Full Time",
+    salary: "INR 6,00,000 - 12,00,000 / year",
     skills: ["AWS", "Docker", "Kubernetes"],
     postedAt: "2026-02-08T07:55:00Z",
     jobDescription: [
@@ -199,6 +207,7 @@ export const jobs = [
     location: "Gurgaon, India",
     experience: "2-4 Years",
     type: "Full Time",
+    salary: "INR 6,00,000 - 12,00,000 / year",
     skills: ["Python", "Django", "REST API"],
     postedAt: "2026-02-09T08:40:00Z",
     jobDescription: [
@@ -222,6 +231,7 @@ export const jobs = [
     location: "Remote",
     experience: "1-3 Years",
     type: "Remote",
+    salary: "INR 8,00,000 - 15,00,000 / year",
     skills: ["Figma", "Adobe XD", "UX Research"],
     postedAt: "2026-02-10T10:05:00Z",
     jobDescription: [
@@ -247,6 +257,7 @@ export const jobs = [
     location: "Remote",
     experience: "2-4 Years",
     type: "Remote",
+    salary: "INR 8,00,000 - 15,00,000 / year",
     skills: ["AWS", "Azure", "GCP"],
     postedAt: "2026-02-11T09:00:00Z",
     jobDescription: [
@@ -270,6 +281,7 @@ export const jobs = [
     location: "Chennai, India",
     experience: "1-3 Years",
     type: "Full Time",
+    salary: "INR 6,00,000 - 12,00,000 / year",
     skills: ["Selenium", "Automation", "Manual Testing"],
     postedAt: "2026-02-12T08:20:00Z",
     jobDescription: [
@@ -293,6 +305,7 @@ export const jobs = [
     location: "Kochi, India",
     experience: "1-3 Years",
     type: "Full Time",
+    salary: "INR 6,00,000 - 12,00,000 / year",
     skills: ["Kotlin", "Android SDK"],
     postedAt: "2026-02-13T08:00:00Z",
     jobDescription: [
@@ -316,6 +329,7 @@ export const jobs = [
     location: "Remote",
     experience: "2-5 Years",
     type: "Remote",
+    salary: "INR 8,00,000 - 15,00,000 / year",
     skills: ["Swift", "Xcode"],
     postedAt: "2026-02-14T09:30:00Z",
     jobDescription: [
@@ -339,6 +353,7 @@ export const jobs = [
     location: "Mumbai, India",
     experience: "2-5 Years",
     type: "Full Time",
+    salary: "INR 6,00,000 - 12,00,000 / year",
     skills: ["Network Security", "SIEM"],
     postedAt: "2026-02-15T11:35:00Z",
     jobDescription: [
@@ -362,6 +377,7 @@ export const jobs = [
     location: "Pune, India",
     experience: "1-3 Years",
     type: "Full Time",
+    salary: "INR 6,00,000 - 12,00,000 / year",
     skills: ["Agile", "Problem Solving"],
     postedAt: "2026-02-16T08:25:00Z",
     jobDescription: [
@@ -385,6 +401,7 @@ export const jobs = [
     location: "Remote",
     experience: "1-3 Years",
     type: "Remote",
+    salary: "INR 8,00,000 - 15,00,000 / year",
     skills: ["Unity", "C#"],
     postedAt: "2026-02-17T07:00:00Z",
     jobDescription: [
@@ -408,6 +425,7 @@ export const jobs = [
     location: "Remote",
     experience: "2-5 Years",
     type: "Remote",
+    salary: "INR 8,00,000 - 15,00,000 / year",
     skills: ["Python", "Deep Learning"],
     postedAt: "2026-02-18T10:35:00Z",
     jobDescription: [
@@ -431,6 +449,7 @@ export const jobs = [
     location: "Delhi, India",
     experience: "1-2 Years",
     type: "Full Time",
+    salary: "INR 6,00,000 - 12,00,000 / year",
     skills: ["SEO", "Google Analytics"],
     postedAt: "2026-02-19T07:45:00Z",
     jobDescription: [
@@ -454,6 +473,7 @@ export const jobs = [
     location: "Mumbai, India",
     experience: "4-7 Years",
     type: "Full Time",
+    salary: "INR 6,00,000 - 12,00,000 / year",
     skills: ["Agile", "Scrum", "Leadership"],
     postedAt: "2026-02-20T08:55:00Z",
     jobDescription: [

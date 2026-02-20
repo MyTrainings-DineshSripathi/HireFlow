@@ -1,14 +1,14 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import './App.css'
-import { jobs } from './DummyData/Dummy'
+// import { jobs } from './DummyData/Dummy'
 import JobDetails from './UIBlocks/JobDetails/JobDetails'
-import JobCard from './UIBlocks/JobCard/JobCard'
+// import JobCard from './UIBlocks/JobCard/JobCard'
 import { useDispatch, useSelector } from 'react-redux'
 import JobGrid from './UIBlocks/JobGrid/JobGrid'
 
 function App() {
 
-  const {selectedJob, search} = useSelector(state => state.job)
+  const {selectedJob, search, jobs, searchedJobs} = useSelector(state => state.job)
   const dispatch = useDispatch()
 
   const recentJobs = jobs.filter(
@@ -27,11 +27,7 @@ function App() {
       {search && <section>
           <JobGrid 
             title={`Jobs found for ${search}`}
-            jobs={jobs.filter((job) => job.title.toLowerCase().includes(search.toLowerCase()) || 
-              job.skills.some((skill) => skill.toLowerCase().includes(search.toLowerCase()) ||
-              job.location.toLowerCase().includes(search.toLowerCase()) ||
-              job.company.toLowerCase().includes(search.toLowerCase())
-            ))}
+            jobs={searchedJobs}
           />
       </section> || <>
         <JobGrid 

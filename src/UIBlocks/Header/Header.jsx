@@ -1,111 +1,185 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import logo from '../../assets/logo-1.png'
-import { LayoutDashboard, LogIn, Menu, Search, Briefcase } from 'lucide-react'
+import { Menu, Search, CircleX } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { jobs } from '@/DummyData/Dummy'
 import { setSearch } from '@/data/slices/JobSlice'
 import { useDispatch, useSelector } from 'react-redux'
 
 function Header() {
-const {search} = useSelector(state => state.job)
-const dispatch = useDispatch()
-// const searchField = () => {
-//   return jobs.filter(job => job.title.toLowerCase().includes(search.toLowerCase()) || jobs.filter(job => job.skills.toLowerCase().includes(search.toLowerCase())))
-// }
+
+  const { search, jobs, searchedJobs } = useSelector(state => state.job)
+  const dispatch = useDispatch()
+
+  const [isOpen, setIsOpen] = useState(false)
+
+  const toggleMenu = () => setIsOpen(!isOpen)
+  const closeMenu = () => setIsOpen(false)
+
+  // Prevent scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "auto"
+  }, [isOpen])
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        
-        {/* Left Section: Branding & Primary Nav */}
-        <div className="flex items-center gap-8">
-          <NavLink to="/" className="flex items-center gap-2.5 transition-all hover:opacity-90">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl shadow-lg shadow-primary/20 overflow-hidden">
-              <img src={logo} alt="HireFlow" className="scale-200 object-cover object-center" /> 
-              {/* brightness-0 invert makes your logo white to pop against the indigo bg */}
-            </div>
-            <span className="text-xl font-extrabold tracking-tight text-foreground">
-              HireFlow
-            </span>
-          </NavLink>
+    <>
+      <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-gradient-to-r from-slate-900 via-slate-950 to-black backdrop-blur-md">
 
-          {/* Desktop Navigation - Subtle Visual Flow */}
-          <nav className="hidden lg:flex items-center gap-1">
-            <NavLink 
-              to="/dashboard" 
-              className={({ isActive }) => 
-                `flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-md transition-all ${
-                  isActive 
-                    ? 'bg-accent text-primary' 
-                    : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-                }`
-              }
+        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+
+          {/* LEFT SIDE */}
+          <div className="flex items-center gap-8">
+
+            <NavLink to="/" onClick={closeMenu} className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl overflow-hidden shadow-lg shadow-indigo-500/20">
+                <img src={logo} alt="HireFlow" className="object-cover w-full h-full" />
+              </div>
+              <span className="text-xl font-extrabold tracking-tight text-white">
+                HireFlow
+              </span>
+            </NavLink>
+
+            {/* Desktop Nav */}
+            <nav className="hidden lg:flex items-center gap-2">
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) =>
+                  `px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    isActive
+                      ? 'bg-indigo-600 text-white'
+                      : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                  }`
+                }
+              >
+                Dashboard
+              </NavLink>
+
+              <NavLink
+                to="/jobs"
+                className={({ isActive }) =>
+                  `px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    isActive
+                      ? 'bg-indigo-600 text-white'
+                      : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                  }`
+                }
+              >
+                Browse Jobs
+              </NavLink>
+            </nav>
+          </div>
+
+          {/* RIGHT SIDE */}
+          <div className="flex items-center gap-4">
+
+            {/* Desktop Search */}
+            <div className="relative hidden md:block">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search jobs..."
+                value={search}
+                onChange={(e) => dispatch(setSearch(e.target.value))}
+                className="h-10 w-72 rounded-full bg-white/5 border border-white/10 pl-10 pr-4 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none"
+              />
+            </div>
+
+            {/* Auth Buttons */}
+            <div className="hidden md:flex items-center gap-3">
+              <Button variant="ghost" asChild className="text-gray-300 hover:text-white">
+                <NavLink to="/signin">Sign In</NavLink>
+              </Button>
+
+              <Button asChild className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full px-6 shadow-lg">
+                <NavLink to="/post-job">Post a Job</NavLink>
+              </Button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={toggleMenu}
+              className="lg:hidden text-white"
             >
-              <LayoutDashboard className="h-4 w-4" />
+              {isOpen ? <CircleX size={26} /> : <Menu size={26} />}
+            </button>
+
+          </div>
+        </div>
+      </header>
+
+      {/* MOBILE MENU OVERLAY */}
+      <div
+        className={`fixed inset-0 z-40 bg-black/70 backdrop-blur-sm transition-opacity duration-300 ${
+          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+        onClick={closeMenu}
+      />
+
+      {/* MOBILE DRAWER */}
+      <div
+        className={`fixed top-0 right-0 z-50 h-full w-72 bg-slate-900 shadow-2xl transform transition-transform duration-300 ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="p-6 space-y-6">
+
+          {/* Mobile Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search jobs..."
+              value={search}
+              onChange={(e) => dispatch(setSearch(e.target.value))}
+              className="w-full h-10 rounded-full bg-white/5 border border-white/10 pl-10 pr-4 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none"
+            />
+          </div>
+
+          {/* Mobile Nav */}
+          <nav className="flex flex-col gap-4">
+            <NavLink
+              to="/dashboard"
+              onClick={closeMenu}
+              className="text-gray-300 hover:text-white font-semibold"
+            >
               Dashboard
             </NavLink>
-            
-            <NavLink 
-              to="/jobs" 
-              className={({ isActive }) => 
-                `flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-md transition-all ${
-                  isActive 
-                    ? 'bg-accent text-primary' 
-                    : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-                }`
-              }
+
+            <NavLink
+              to="/jobs"
+              onClick={closeMenu}
+              className="text-gray-300 hover:text-white font-semibold"
             >
-              <Briefcase className="h-4 w-4" />
               Browse Jobs
             </NavLink>
-          </nav>
-        </div>
 
-        {/* Right Section: Global Search & Auth */}
-        <div className="flex items-center gap-4">
-          {/* Search Bar with Muted Palette */}
-          <div className="relative hidden md:block">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search jobs, companies..." 
-              value={search}
-              className="h-10 w-72 rounded-full border border-input bg-muted/30 pl-10 pr-4 text-sm transition-all focus:bg-background focus:ring-2 focus:ring-primary/20 focus:outline-none"
-              onChange={(e) => dispatch(setSearch(e.target.value))}
-            />
-            {/* {searchField().map((job) => (
-              <div key={job.id}>
-                {job.title}
-                {job.skills?.join(',')}
-              </div>
-            ))} */}
-            <div>
-              <h5>Total jobs: </h5>
-            </div>
-          </div>
+            <NavLink
+              to="/signin"
+              onClick={closeMenu}
+              className="text-gray-300 hover:text-white font-semibold"
+            >
+              Sign In
+            </NavLink>
 
-          <div className="flex items-center gap-2 border-l border-border pl-4">
-            <Button variant="ghost" size="sm" asChild className="hidden sm:flex font-semibold text-muted-foreground hover:text-primary">
-              <NavLink to="/signin">
-                <LogIn className="mr-2 h-4 w-4" />
-                Sign In
-              </NavLink>
-            </Button>
-            
-            <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-md shadow-primary/25 rounded-full px-6">
+            <NavLink
+              to="/post-job"
+              onClick={closeMenu}
+              className="inline-flex h-10 items-center justify-center rounded-full bg-indigo-600 px-4 text-white font-semibold hover:bg-indigo-500"
+            >
               Post a Job
-            </Button>
-            
-            <Button variant="outline" size="icon" className="md:hidden border-none bg-secondary">
-              <Menu className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
+            </NavLink>
+          </nav>
 
+          {/* Job Count */}
+          <div className="text-sm text-gray-400 pt-4 border-t border-white/10">
+            Total jobs: {searchedJobs?.length || jobs?.length}
+          </div>
+
+        </div>
       </div>
-    </header>
+    </>
   )
 }
+
 
 export default Header
