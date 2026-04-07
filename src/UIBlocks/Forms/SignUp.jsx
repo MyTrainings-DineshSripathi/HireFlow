@@ -1,24 +1,53 @@
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { Mail, Lock, User, Briefcase, Building } from "lucide-react"
-import { USER_SIGNUP } from "@/configs/Firebase/UserData"
+// import { USER_SIGNUP } from "@/configs/Firebase/UserData"
+import { REGISTER_USER } from "@/connector/api"
+import { toast, Toaster } from "sonner"
 
 function SignUp() {
 
-  const [role, setRole] = useState("seeker")
+  const navigate = useNavigate()
+
+  const [role, setRole] = useState("SEEKER")
 
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors }
+    formState: { errors },
+    reset
   } = useForm()
 
   const password = watch("password")
 
   const onSubmit = async (data) => {
-      await USER_SIGNUP({...data, role})
+      toast.loading('Registering...');
+      try{
+        let finalData = {}
+        const {fullname, email, password} = data 
+        finalData = {fullname, email, password, role}
+        if(role == 'HR'){
+          const {company} = data 
+          finalData = {...finalData, company}
+        }
+
+        console.log(finalData)
+        const response = await REGISTER_USER(finalData)
+        console.log(response)
+        if(response.status == 201){
+          toast.success('Registration successful!')
+          reset()
+          navigate('/signin')
+        }else{
+          reset()
+          toast.error('Registration failed. Please try again.')
+        }
+      }catch(error){
+        console.error(error)
+        toast.error('An error occurred. Please try again.')
+      }
   }
 
   return (
@@ -38,9 +67,9 @@ function SignUp() {
         <div className="flex gap-3 mb-6">
           <button
             type="button"
-            onClick={() => setRole("seeker")}
+            onClick={() => setRole("SEEKER")}
             className={`flex-1 py-2 rounded-xl text-sm font-semibold transition ${
-              role === "seeker"
+              role === "SEEKER"
                 ? "bg-indigo-600 text-white"
                 : "bg-white/5 text-gray-400 hover:bg-white/10"
             }`}
@@ -50,9 +79,9 @@ function SignUp() {
 
           <button
             type="button"
-            onClick={() => setRole("hr")}
+            onClick={() => setRole("HR")}
             className={`flex-1 py-2 rounded-xl text-sm font-semibold transition ${
-              role === "hr"
+              role === "HR"
                 ? "bg-indigo-600 text-white"
                 : "bg-white/5 text-gray-400 hover:bg-white/10"
             }`}
@@ -71,7 +100,7 @@ function SignUp() {
               <input
                 type="text"
                 placeholder="Full Name"
-                {...register("name", { required: "Name is required" })}
+                {...register("fullname", { required: "Name is required" })}
                 className="w-full h-11 rounded-xl bg-white/5 border border-white/10 pl-10 pr-4 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none"
               />
             </div>
@@ -107,13 +136,13 @@ function SignUp() {
           </div>
 
           {/* company name */}
-          {role == "hr" && <div>
+          {role == "HR" && <div>
             <div className="relative">
               <Building className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
                 placeholder="Company name"
-                {...register("companyname", {
+                {...register("company", {
                   required: "companyname is required",
                 })}
                 className="w-full h-11 rounded-xl bg-white/5 border border-white/10 pl-10 pr-4 text-sm text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 outline-none"
@@ -191,7 +220,9 @@ function SignUp() {
             Sign In
           </NavLink>
         </p>
-
+      </div>
+      <div className="toster">
+        <Toaster position="top-center" />
       </div>
     </section>
   )

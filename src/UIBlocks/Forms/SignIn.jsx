@@ -1,9 +1,16 @@
 import React from "react"
 import { useForm } from "react-hook-form"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { Mail, Lock, Github } from "lucide-react"
+import { LOGIN_USER } from "@/connector/api"
+import { saveTokens } from "@/data/indexed/IndexedService"
+import { useDispatch } from "react-redux"
+import { setUserData } from "@/data/slices/userSlice"
 
 function SignIn() {
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const {
     register,
@@ -11,8 +18,25 @@ function SignIn() {
     formState: { errors },
   } = useForm()
 
-  const onSubmit = (data) => {
-    console.log("Login Data:", data)
+  const onSubmit = async (data) => {
+    try{
+      console.log("Login Data:", data)
+      const response = await LOGIN_USER(data)
+      console.log("Login Response:", response)
+      if(response.status === 200){
+        try{
+          const indexedResponse = await saveTokens(response.data.accessToken, response.data.refreshToken, response.data.role)
+          dispatch(setUserData({ isLoggedIn: true, role: response.data.role }))
+          navigate('/')
+        }catch(error){
+          console.error("IndexedDB Error:", error)
+        }
+      }else{
+        console.log("login failed")
+      }
+    }catch(error){
+      console.error("Login Error:", error)
+    }
   }
 
   return (

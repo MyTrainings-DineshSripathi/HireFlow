@@ -1,25 +1,57 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { NavLink } from 'react-router-dom'
 import logo from '../../assets/logo-1.png'
-import { Menu, Search, CircleX } from 'lucide-react'
+import { Menu, Search, CircleX, User, X } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { setSearch } from '@/data/slices/JobSlice'
+import { setUserData } from '@/data/slices/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { clearTokens } from '@/data/indexed/IndexedService'
+import { toast, Toaster } from 'sonner'
 
 function Header() {
 
+  const { role, isLoggedIn } = useSelector(state => state.user)
   const { search, jobs, searchedJobs } = useSelector(state => state.job)
   const dispatch = useDispatch()
+  const accountMenuRef = useRef(null)
 
   const [isOpen, setIsOpen] = useState(false)
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false)
 
   const toggleMenu = () => setIsOpen(!isOpen)
   const closeMenu = () => setIsOpen(false)
+  const closeAccountMenu = () => setIsAccountMenuOpen(false)
 
-  // Prevent scroll when mobile menu is open
+  const roleLabel = role ? role.charAt(0).toUpperCase() + role.slice(1) : 'User'
+
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "auto"
   }, [isOpen])
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(event.target)) {
+        setIsAccountMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleOutsideClick)
+    return () => document.removeEventListener('mousedown', handleOutsideClick)
+  }, [])
+
+  const handleLogout = async () => {
+    await clearTokens()
+    dispatch(setUserData({ isLoggedIn: false, role: null }))
+    closeAccountMenu()
+    closeMenu()
+    toast('user logged out successfully', {
+      action: {
+        label: <X />,
+        onClick: () => console.log('logged out!'),
+      },
+    });
+  }
 
   return (
     <>
@@ -41,7 +73,7 @@ function Header() {
 
             {/* Desktop Nav */}
             <nav className="hidden lg:flex items-center gap-2">
-              <NavLink
+              {isLoggedIn && <NavLink
                 to="/dashboard"
                 className={({ isActive }) =>
                   `px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
@@ -52,7 +84,7 @@ function Header() {
                 }
               >
                 Dashboard
-              </NavLink>
+              </NavLink>}
 
               <NavLink
                 to="/jobs"
@@ -86,13 +118,58 @@ function Header() {
 
             {/* Auth Buttons */}
             <div className="hidden md:flex items-center gap-3">
-              <Button variant="ghost" asChild className="text-gray-300 hover:text-white">
-                <NavLink to="/signin">Sign In</NavLink>
-              </Button>
-
-              <Button asChild className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full px-6 shadow-lg">
+              {(role === 'HR' && isLoggedIn) && <Button asChild className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-full px-6 shadow-lg">
                 <NavLink to="/post-job">Post a Job</NavLink>
-              </Button>
+              </Button>}
+
+              <div className="relative" ref={accountMenuRef}>
+                <Button
+                  variant={'outline'}
+                  onClick={() => setIsAccountMenuOpen(prev => !prev)}
+                  className="text-gray-300 hover:text-white rounded-full h-11 w-11"
+                >
+                  {<User color='black' />}
+                </Button>
+
+                <div className={`absolute right-0 mt-2 w-64 overflow-hidden rounded-3xl border border-white/10 bg-slate-950 text-sm shadow-2xl transition-all duration-200 ${isAccountMenuOpen ? 'opacity-100 visible scale-100' : 'opacity-0 invisible scale-95'}`}>
+                  <div className="p-4">
+                    {isLoggedIn ? (
+                      <>
+                        <div className="rounded-2xl bg-white/5 px-3 py-2 text-xs uppercase tracking-[0.18em] text-gray-400">
+                          Signed in as {roleLabel}
+                        </div>
+                        <NavLink
+                          to="/dashboard"
+                          onClick={closeAccountMenu}
+                          className="mt-2 block rounded-2xl px-3 py-2 text-white hover:bg-white/10"
+                        >
+                          My Account
+                        </NavLink>
+                        <button
+                          type="button"
+                          onClick={handleLogout}
+                          className="mt-2 w-full rounded-2xl px-3 py-2 text-left text-gray-300 hover:bg-white/10"
+                        >
+                          Logout
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="rounded-2xl bg-white/5 px-3 py-2 text-xs uppercase tracking-[0.18em] text-gray-400">
+                          Account options
+                        </div>
+                        <NavLink
+                          to="/signin"
+                          onClick={closeAccountMenu}
+                          className="mt-2 block rounded-2xl px-3 py-2 text-white hover:bg-white/10"
+                        >
+                          Sign In
+                        </NavLink>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Mobile Menu Button */}
@@ -137,13 +214,15 @@ function Header() {
 
           {/* Mobile Nav */}
           <nav className="flex flex-col gap-4">
-            <NavLink
-              to="/dashboard"
-              onClick={closeMenu}
-              className="text-gray-300 hover:text-white font-semibold"
-            >
-              Dashboard
-            </NavLink>
+            {isLoggedIn && (
+              <NavLink
+                to="/dashboard"
+                onClick={closeMenu}
+                className="text-gray-300 hover:text-white font-semibold"
+              >
+                Dashboard
+              </NavLink>
+            )}
 
             <NavLink
               to="/jobs"
@@ -153,21 +232,47 @@ function Header() {
               Browse Jobs
             </NavLink>
 
-            <NavLink
-              to="/signin"
-              onClick={closeMenu}
-              className="text-gray-300 hover:text-white font-semibold"
-            >
-              Sign In
-            </NavLink>
+            {!isLoggedIn && (
+              <NavLink
+                to="/signin"
+                onClick={closeMenu}
+                className="text-gray-300 hover:text-white font-semibold"
+              >
+                Sign In
+              </NavLink>
+            )}
 
-            <NavLink
-              to="/post-job"
-              onClick={closeMenu}
-              className="inline-flex h-10 items-center justify-center rounded-full bg-indigo-600 px-4 text-white font-semibold hover:bg-indigo-500"
-            >
-              Post a Job
-            </NavLink>
+            {isLoggedIn && (
+              <>
+                <div className="rounded-2xl bg-white/5 px-3 py-2 text-xs uppercase tracking-[0.18em] text-gray-400">
+                  Signed in as {roleLabel}
+                </div>
+                <NavLink
+                  to="/dashboard"
+                  onClick={closeMenu}
+                  className="text-gray-300 hover:text-white font-semibold"
+                >
+                  My Account
+                </NavLink>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="text-left text-gray-300 hover:text-white font-semibold"
+                >
+                  Logout
+                </button>
+              </>
+            )}
+
+            {(role === 'HR' && isLoggedIn) && (
+              <NavLink
+                to="/post-job"
+                onClick={closeMenu}
+                className="inline-flex h-10 items-center justify-center rounded-full bg-indigo-600 px-4 text-white font-semibold hover:bg-indigo-500"
+              >
+                Post a Job
+              </NavLink>
+            )}
           </nav>
 
           {/* Job Count */}
@@ -176,6 +281,9 @@ function Header() {
           </div>
 
         </div>
+      </div>
+      <div>
+        <Toaster position='top-center'></Toaster>
       </div>
     </>
   )

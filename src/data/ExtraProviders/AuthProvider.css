@@ -1,0 +1,31 @@
+.auth-loader {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 9999;
+  padding: 1rem;
+}
+
+.auth-loader__spinner {
+  width: 56px;
+  height: 56px;
+  border: 8px solid rgba(0, 0, 0, 0.12);
+  border-top-color: #5c3cff;
+  border-radius: 50%;
+  animation: auth-loader-spin 0.9s linear infinite;
+}
+
+.auth-loader p {
+  margin-top: 1rem;
+  color: #20232a;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+@keyframes auth-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
