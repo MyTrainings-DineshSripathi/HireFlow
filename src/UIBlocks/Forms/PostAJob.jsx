@@ -18,13 +18,17 @@ function PostAJob() {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
       postedAt: new Date().toISOString().slice(0, 16),
       type: "Full Time",
+      applySource: "hire_flow"
     },
   })
+
+  const applySource = watch("applySource")
 
   const onSubmit = (data) => {
     const payload = {
@@ -146,7 +150,7 @@ function PostAJob() {
                 <IndianRupee className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="?6,00,000 - ?10,00,000 / year"
+                  placeholder="6,00,000 - 10,00,000 / year"
                   {...register("salary", { required: "Salary is required" })}
                   className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-10 pr-4 text-sm text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-indigo-500"
                 />
@@ -160,14 +164,73 @@ function PostAJob() {
                 <CalendarClock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                 <input
                   type="datetime-local"
-                  {...register("postedAt", { required: "Posted time is required" })}
+                  {...register("posted_at", { required: "Posted time is required" })}
                   className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-10 pr-4 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
-              {errors.postedAt && <p className="mt-1 text-xs text-red-400">{errors.postedAt.message}</p>}
+              {errors.posted_at && <p className="mt-1 text-xs text-red-400">{errors.posted_at.message}</p>}
             </div>
 
-            <div>
+            {/* Application Source - spans full width */}
+            <div className="md:col-span-2">
+              <label className="mb-2 block text-sm text-gray-300">Where should candidates apply?</label>
+              <div className="flex gap-3">
+                <label className={`flex flex-1 cursor-pointer items-center gap-3 rounded-xl border p-3 transition-all ${
+                  applySource === "hire_flow"
+                    ? "border-indigo-500 bg-indigo-500/10 text-white"
+                    : "border-white/10 bg-white/5 text-gray-400 hover:bg-white/10"
+                }`}>
+                  <input
+                    type="radio"
+                    value="hire_flow"
+                    {...register("apply_source")}
+                    className="accent-indigo-500"
+                  />
+                  <div>
+                    <p className="text-sm font-semibold">On HireFlow</p>
+                    <p className="text-xs text-gray-400">Candidates apply directly within the platform</p>
+                  </div>
+                </label>
+
+                <label className={`flex flex-1 cursor-pointer items-center gap-3 rounded-xl border p-3 transition-all ${
+                  applySource === "company_site"
+                    ? "border-indigo-500 bg-indigo-500/10 text-white"
+                    : "border-white/10 bg-white/5 text-gray-400 hover:bg-white/10"
+                }`}>
+                  <input
+                    type="radio"
+                    value="company_site"
+                    {...register("apply_source")}
+                    className="accent-indigo-500"
+                  />
+                  <div>
+                    <p className="text-sm font-semibold">On Company Site</p>
+                    <p className="text-xs text-gray-400">Redirect candidates to your job listing URL</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            {/* Conditional URL field */}
+            {applySource === "company_site" && (
+              <div className="md:col-span-2">
+                <label className="mb-1 block text-sm text-gray-300">Job Listing URL</label>
+                <div className="relative">
+                  <LinkIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="url"
+                    placeholder="https://technova.com/careers/frontend-developer"
+                    {...register("url", {
+                      required: applySource === "company_site" ? "URL is required for company site applications" : false,
+                    })}
+                    className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-10 pr-4 text-sm text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+                {errors.url && <p className="mt-1 text-xs text-red-400">{errors.url.message}</p>}
+              </div>
+            )}
+
+            {/* <div>
               <label className="mb-1 block text-sm text-gray-300">URL</label>
               <div className="relative">
                 <LinkIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
@@ -179,7 +242,7 @@ function PostAJob() {
                 />
               </div>
               {errors.url && <p className="mt-1 text-xs text-red-400">{errors.url.message}</p>}
-            </div>
+            </div> */}
           </div>
 
           <div>
@@ -200,11 +263,11 @@ function PostAJob() {
               <textarea
                 rows={5}
                 placeholder="We are looking for a passionate Frontend Developer to build modern web applications."
-                {...register("jobDescription", { required: "Job description is required" })}
+                {...register("job_description", { required: "Job description is required" })}
                 className="w-full rounded-xl border border-white/10 bg-white/5 pl-10 pr-4 pt-3 text-sm text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
-            {errors.jobDescription && <p className="mt-1 text-xs text-red-400">{errors.jobDescription.message}</p>}
+            {errors.job_description && <p className="mt-1 text-xs text-red-400">{errors.job_description.message}</p>}
           </div>
 
           <div>
@@ -212,11 +275,11 @@ function PostAJob() {
             <textarea
               rows={5}
               placeholder="Develop responsive UI using React."
-              {...register("rolesAndResponsibilities", { required: "Roles and responsibilities are required" })}
+              {...register("roles_and_responsibilities", { required: "Roles and responsibilities are required" })}
               className="w-full rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-indigo-500"
             />
-            {errors.rolesAndResponsibilities && (
-              <p className="mt-1 text-xs text-red-400">{errors.rolesAndResponsibilities.message}</p>
+            {errors.roles_and_responsibilities && (
+              <p className="mt-1 text-xs text-red-400">{errors.roles_and_responsibilities.message}</p>
             )}
           </div>
 
@@ -225,10 +288,10 @@ function PostAJob() {
             <textarea
               rows={3}
               placeholder="TechNova is a fast-growing digital solutions company delivering scalable web and cloud applications."
-              {...register("aboutCompany", { required: "About company is required" })}
+              {...register("about_company", { required: "About company is required" })}
               className="w-full rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-indigo-500"
             />
-            {errors.aboutCompany && <p className="mt-1 text-xs text-red-400">{errors.aboutCompany.message}</p>}
+            {errors.about_company && <p className="mt-1 text-xs text-red-400">{errors.about_company.message}</p>}
           </div>
 
           <div className="flex flex-col gap-3 pt-2 sm:flex-row">

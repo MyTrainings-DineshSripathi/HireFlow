@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo-1.png'
 import { Menu, Search, CircleX, User, X } from 'lucide-react'
 import { Button } from "@/components/ui/button"
@@ -15,6 +15,7 @@ function Header() {
   const { search, jobs, searchedJobs } = useSelector(state => state.job)
   const dispatch = useDispatch()
   const accountMenuRef = useRef(null)
+  const navigate = useNavigate()
 
   const [isOpen, setIsOpen] = useState(false)
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false)
@@ -51,6 +52,7 @@ function Header() {
         onClick: () => console.log('logged out!'),
       },
     });
+    navigate('/')
   }
 
   return (
